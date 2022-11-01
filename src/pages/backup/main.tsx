@@ -31,7 +31,7 @@ let resObj: any = {};
 const App: React.FC = () => {
   let [modalVisible, changeModalVisible] = useState(false);
   let [echartsVisible, changeEchartsVisible] = useState(false);
-  let [buttonVisible, changeButtonVisible] =useState(true);
+  let [buttonVisible, changeButtonVisible] = useState(true);
 
   const [form] = Form.useForm();
 
@@ -60,6 +60,8 @@ const App: React.FC = () => {
   const calculate: React.ReactNode[] = [];
 
   const [calculate1, setcalculate1]: any = useState([]);
+
+  const [plotObj, setPlotObj]: any = useState({});
 
   function Fn(key: any, setParams: any, arr: any) {
     useEffect(() => {
@@ -104,14 +106,12 @@ const App: React.FC = () => {
     backObj[value] = arrValue;
   };
 
-  let plotObj: any = {};
-  let optionCharts: any={};
-
   function testFn(arr, key) {
     return arr.filter((val, index) => backObj[key].includes('' + index));
   }
   const sendData = async () => {
     let { versions, metrics, cases, calculate } = resObj; // quanji
+
     axios
       .post('http://10.64.36.78:5000/send', {
         versions: testFn(versions, 'versions'),
@@ -120,67 +120,93 @@ const App: React.FC = () => {
         calculate: testFn(calculate, 'calculate'),
       })
       .then(function (response) {
-        changeModalVisible(false);
-        message.success('数据筛选完成');
-        changeEchartsVisible(true);
-        changeButtonVisible(false);
         console.log(response);
-        plotObj = JSON.parse(JSON.stringify(response.data));
-        let legend = Object.keys(plotObj).filter((val, index) => val !== 'versions');
-        optionCharts= {
-            title: {
-              text: '可视化图表格', //标题，想必大家都清楚
-            },
-            tooltip: {
-              trigger: 'axis',
-            },
-            legend: {
-              data: legend,
-            },
-            grid: {
-              left: '3%',
-              right: '4%',
-              bottom: '20%',
-              containLabel: true,
-            },
-            toolbox: {
-              feature: {
-                saveAsImage: {},
-              },
-            },
-            xAxis: {
-              type: 'category', //注意一下，这个value值是固定的。
-              boundaryGap: false,
-              data: plotObj['versions'],
-              //data就是分类的一些名字，比如我图例中的 一月、二月、三月
-            },
-            yAxis: {
-              type: 'value',
-            },
-            series: [
-              {
-                name: legend[0]+"",
-                type: 'line',
-                stack: 'Total',
-                data: [120, 132, 101, 134, 90, 230, 210],
-              },
-              {
-                name: legend[1]+"",
-                type: 'line',
-                stack: 'Total',
-                data: [220, 182, 191, 234, 290, 330, 310],
-              },
-            ],
-          };
+        let _plotObj = JSON.parse(JSON.stringify(response.data));
+        setPlotObj(_plotObj);
+        console.log(
+          Object.keys(plotObj).filter((val, index) => val !== 'versions'),
+        );
       })
       .catch(function (error) {
         return error;
       });
+    changeModalVisible(false);
+    message.success('数据筛选完成');
+    changeEchartsVisible(true);
+    changeButtonVisible(false);
   };
 
-  let legend = Object.keys(plotObj).filter((val, index) => val !== 'versions');
+  // let legend = Object.keys(plotObj).filter((val, index) => val !== 'versions');
 
+  let getOption = () => {
+    let legend = Object.keys(plotObj).filter(
+      (val, index) => val !== 'versions' && val !== 'type',
+    );
+    console.log(legend, 1111);
+    console.log(plotObj, 2222);
 
+    let option = {
+      title: {
+        text: '', //标题，想必大家都清楚
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        data: legend,
+      },
+      grid: {
+        left: '20px',
+        right: '20%',
+        top: '30%',
+        bottom: '20%',
+        containLabel: true,
+      },
+      toolbox: {
+        feature: {
+          saveAsImage: {},
+        },
+      },
+      xAxis: {
+        type: 'category', //注意一下，这个value值是固定的。
+        boundaryGap: false,
+        data: plotObj['versions'],
+        //data就是分类的一些名字，比如我图例中的 一月、二月、三月
+      },
+      yAxis: {
+        type: 'value',
+      },
+      series: Object.keys(plotObj)
+        .filter((val, index) => val !== 'versions' && val !== 'type')
+        .map((e, index) => {
+          let obj = {
+            name: legend[index],
+            type: 'line',
+            stack: 'Total',
+            data: plotObj[e],
+          };
+          console.log('obj', obj);
+          return obj;
+        }),
+      // {
+      //   name: legend[0] + '',
+      //   type: 'line',
+      //   stack: 'Total',
+      //   data: [120, 132, 101, 134, 90, 230, 210],
+      // },
+      // {
+      //   name: legend[1] + '',
+      //   type: 'line',
+      //   stack: 'Total',
+      //   data: [220, 182, 191, 234, 290, 330, 310],
+      // },
+    };
+    return option;
+  };
+
+  // let getlen = () => {
+  //   return plotObj['versions'].length *20
+  // }
 
   return (
     <Layout>
@@ -199,21 +225,23 @@ const App: React.FC = () => {
 
       <Content style={{ position: 'relative', width: '100%', height: '100%' }}>
         <div style={{ background: '#fff', padding: 24, minHeight: 480 }}>
-          {buttonVisible&&(<Button
-            style={{
-              position: 'absolute',
-              left: '50%',
-              top: '80px',
-              width: '150px',
-              height: '60px',
-            }}
-            onClick={() => {
-              changeModalVisible(!modalVisible);
-              // changeEchartsVisible(false)
-            }}
-          >
-            生成图表
-          </Button>)}
+          {buttonVisible && (
+            <Button
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '80px',
+                width: '150px',
+                height: '60px',
+              }}
+              onClick={() => {
+                changeModalVisible(!modalVisible);
+                // changeEchartsVisible(false)
+              }}
+            >
+              生成图表
+            </Button>
+          )}
           <Modal
             visible={modalVisible}
             title="选择参数"
@@ -282,8 +310,19 @@ const App: React.FC = () => {
             </Form>
           </Modal>
           {echartsVisible && (
-            <div style={{ width: '500px', height: '500px', margin: '0 auto' }}>
-              <ReactEcharts option={optionCharts} />
+            <div
+              style={{
+                width: `${
+                  plotObj['versions'] ? plotObj['versions'].length * 100 : 500
+                }px`,
+                height: '150px',
+                margin: '0 auto',
+              }}
+            >
+              <ReactEcharts
+                key={JSON.stringify(plotObj)}
+                option={getOption()}
+              />
             </div>
           )}
         </div>
