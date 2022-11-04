@@ -1,0 +1,26 @@
+.ecahrts {
+  width: 100% !important;
+  height: 100%;
+  .notData {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #666;
+    text-align: center;
+    line-height: 498px;
+  }
+}
+
+:global(.echarts-for-react) {
+  width: 100% !important;
+  height: 100% !important;
+  > div {
+    &:nth-child(1) {
+      width: 100% !important;
+      height: 100% !important;
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+      }
+    }
+  }
+}
