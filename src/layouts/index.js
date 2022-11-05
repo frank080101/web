@@ -14,7 +14,7 @@ export default function (props) {
   const history = useHistory();
 
   if (history.location?.pathname === '/') {
-    history.replace('/demo1');
+    history.replace('/fusion');
   }
 
   const [collapsed, setcollapsed] = useState(false);

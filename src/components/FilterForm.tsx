@@ -1,19 +1,15 @@
 import { ChartContext, store } from '@/store';
 import { Form, Select, Button } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import { submit, getCalculate, getCases, getMetrics, getVersions } from '@/api';
-interface FormProps {
-  ref?: any;
-  onSubmit: Function;
-  setLoading: Function;
-}
+import { submit, getCases, getMetrics, getVersions } from '@/api';
+
 
 const formLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 19 },
 };
 
-export default function (props: FormProps) {
+export default function (props: any) {
   const [form] = Form.useForm();
 
   const [versions, setVersions] = useState([]);
@@ -24,26 +20,30 @@ export default function (props: FormProps) {
   const { loading } = useContext(ChartContext);
 
   const getVersionsList = async () => {
-    const res = await getVersions();
+    const res = (await getVersions({type: props.type})) || [];
     setVersions(res);
+    form.setFieldValue('versions', res)
   };
-  const getCalculateList = async () => {
-    const res = await getCalculate();
-    setCalculate(res);
-  };
+  // const getCalculateList = async () => {
+  //   const res = await getCalculate() || [];
+  //   setCalculate(res);
+  // };
   const getCasesList = async () => {
-    const res = await getCases();
+    const res = await getCases({type: props.type}) || [];
     setCases(res);
+    form.setFieldValue('cases', res)
   };
   const getMetricsList = async () => {
-    const res = await getMetrics();
+    const res = await getMetrics({type: props.type}) || [];
     setMetrics(res);
+    form.setFieldValue('metrics', res)
   };
+
 
   // 获取列表
   useEffect(() => {
     getVersionsList();
-    getCalculateList();
+    // getCalculateList();
     getCasesList();
     getMetricsList();
   }, []);
@@ -51,10 +51,17 @@ export default function (props: FormProps) {
   const onSubmit = async (values: any) => {
     props.setLoading(true);
     // 请求接口
-    const res = await submit(values);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    props.onSubmit(res);
-    props.setLoading(false);
+    values.type = props.type
+    try {
+      const res = await submit(values);
+      // await new Promise((resolve) => setTimeout(resolve, 10000));
+      props.onSubmit(res);
+      props.setLoading(false);
+    } catch(e) {
+      props.setLoading(false);
+    }
+    
+    
   };
 
   return (
@@ -62,33 +69,33 @@ export default function (props: FormProps) {
       <h1>You Title</h1>
       <Form {...formLayout} form={form} onFinish={onSubmit}>
         <Form.Item name="versions" label="versions">
-          <Select mode="multiple" allowClear placeholder="Please select">
-            {versions.map((item: any, index: number) => {
-              return <Select.Option key={index}>{item}</Select.Option>;
+          <Select mode="multiple" allowClear placeholder="Please select" showSearch>
+            {versions?.map((item: any, index: number) => {
+              return <Select.Option key={item}>{item}</Select.Option>;
             })}
           </Select>
         </Form.Item>
         <Form.Item name="metrics" label="metrics">
-          <Select mode="multiple" allowClear placeholder="Please select">
-            {metrics.map((item: any, index: number) => {
-              return <Select.Option key={index}>{item}</Select.Option>;
+          <Select mode="multiple" allowClear placeholder="Please select"showSearch>
+            {metrics?.map((item: any, index: number) => {
+              return <Select.Option key={item}>{item}</Select.Option>;
             })}
           </Select>
         </Form.Item>
         <Form.Item name="cases" label="cases">
-          <Select mode="multiple" allowClear placeholder="Please select">
-            {cases.map((item: any, index: number) => {
-              return <Select.Option key={index}>{item}</Select.Option>;
+          <Select mode="multiple" allowClear placeholder="Please select"showSearch>
+            {cases?.map((item: any, index: number) => {
+              return <Select.Option key={item}>{item}</Select.Option>;
             })}
           </Select>
         </Form.Item>
-        <Form.Item name="calculate" label="calculate">
-          <Select mode="multiple" allowClear placeholder="Please select">
+        {/* <Form.Item name="calculate" label="calculate">
+          <Select mode="multiple" allowClear placeholder="Please select"showSearch>
             {calculate?.map((item: any, index: number) => {
-              return <Select.Option key={index}>{item}</Select.Option>;
+              return <Select.Option key={item}>{item}</Select.Option>;
             })}
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item wrapperCol={{ ...formLayout.wrapperCol, offset: 5 }}>
           <Button type="primary" htmlType="submit" loading={loading}>
             Submit

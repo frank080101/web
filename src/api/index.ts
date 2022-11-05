@@ -1,21 +1,17 @@
 import request from '@/utils/request';
 
 export function getVersions(params?: any) {
-  return request('GET', '/versions', params);
-}
-
-export function getCalculate(params?: any) {
-  return request('GET', '/calculate', params);
+  return request('GET', '/versions/'+params?.type);
 }
 
 export function getCases(params?: any) {
-  return request('GET', '/cases', params);
+  return request('GET', '/cases/'+params?.type);
 }
 
 export function getMetrics(params?: any) {
-  return request('GET', '/metrics', params);
+  return request('GET', '/metrics/'+params?.type);
 }
 
 export function submit(params: any) {
-  return request('POST', '/send', params);
+  return request('POST', '/send',params);
 }

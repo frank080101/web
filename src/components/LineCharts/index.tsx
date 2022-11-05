@@ -1,10 +1,10 @@
 import { ChartContext } from '@/store';
 import ReactEcharts from 'echarts-for-react';
 import { useContext, useMemo } from 'react';
-
+import {Spin} from 'antd'
 import style from './index.module.less';
 
-const option: any = {
+const getOption: any = () => ({
   animationDuration: 1000,
   title: {
     text: '', //标题，想必大家都清楚
@@ -37,13 +37,13 @@ const option: any = {
     type: 'value',
   },
   series: [],
-};
+});
 
 export default function (props: any) {
   const context = useContext(ChartContext);
   const chartOption = useMemo(() => {
-    if (!props?.params) return option;
-    let copy = { ...option };
+    let copy = getOption();
+    if (!props?.params) return copy;
     // 添加 legend
     copy.legend.data = Object.keys(props?.params).filter(
       (i) => i != 'versions',
@@ -51,12 +51,10 @@ export default function (props: any) {
     // 添加横坐标
     copy.xAxis.data = props.params?.versions || [];
     // 添加纵坐标的值
-    copy.series = [];
     copy.legend.data?.forEach((item: any) => {
       copy.series.push({
         name: item,
         type: 'line',
-        stack: 'Total',
         data: props.params[item] || [],
       });
     });
@@ -65,7 +63,10 @@ export default function (props: any) {
 
   return (
     <div className={style.ecahrts} style={{ width: '100%' }}>
-      {props.params || context.loading ? (
+      {context.loading ? (
+        <Spin spinning={true} style={{width: '100%', lineHeight: '500px'}}></Spin>
+        
+      ) : props.params ? (
         <ReactEcharts
           option={chartOption}
           loadingOption={{

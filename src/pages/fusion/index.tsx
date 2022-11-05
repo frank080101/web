@@ -13,31 +13,8 @@ export default function () {
 
   const [state, dispatch] = useReducer(reducer, store);
 
-  // useEffect(() => {
-  //   getVersionsList()
-  //   getCalculateList()
-  //   getCasesList()
-  //   getMetricsList()
-  // }, [])
-
-  // const getVersionsList = async () => {
-  //   const res = await getVersions()
-  //   dispatch({type: 'versions', value: res})
-  // }
-  // const getCalculateList = async () => {
-  //   const res = await getCalculate()
-  //   dispatch({type: 'calculate', value: res})
-  // }
-  // const getCasesList = async () => {
-  //   const res = await getCases()
-  //   dispatch({type: 'cases', value: res})
-  // }
-  // const getMetricsList = async () => {
-  //   const res = await getMetrics()
-  //   dispatch({type: 'metrics', value: res})
-  // }
-
   const onFinish = (val: any) => {
+    // paint 
     setParams(val);
   };
 
@@ -50,6 +27,7 @@ export default function () {
       <div className={style.container}>
         <div className={style.left}>
           <FilterForm
+            type="fusion"
             onSubmit={(val: any) => onFinish(val)}
             setLoading={(val: boolean) => setLoading(val)}
           />
