@@ -16,6 +16,6 @@ export function submit(params: any) {
   return request('POST', '/send', params);
 }
 
-export function getTableData(params: any) {
+export function getTableData(params?: any) {
   return request('GET', '/table', params);
 }

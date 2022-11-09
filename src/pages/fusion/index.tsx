@@ -5,8 +5,14 @@ import style from './index.module.less';
 import LineCharts from '@/components/LineCharts';
 import { useEffect, useReducer, useState } from 'react';
 import { ChartContext, reducer, store } from '@/store';
-import { Table } from 'antd';
+import { Table, Checkbox } from 'antd';
 import { getTableData } from '@/api';
+
+const optionsWithDisabled = [
+  { label: 'Apple', value: 'Apple' },
+  { label: 'Pear', value: 'Pear' },
+  { label: 'Orange', value: 'Orange', disabled: false },
+];
 
 const columns: any[] = [
   {
@@ -17,12 +23,27 @@ const columns: any[] = [
   {
     title: 'version',
     dataIndex: 'version',
-    key: 'version',
   },
   {
     title: 'reason',
     dataIndex: 'reason',
-    key: 'reason',
+  },
+  {
+    title: 'predictable',
+    dataIndex: 'predictable',
+    render: (text: boolean | null, record: any, index: number) => {
+      let selected = [record];
+      const onChange = (val: any) => {
+        selected = [val];
+      };
+      return (
+        <Checkbox.Group
+          value={selected}
+          options={optionsWithDisabled}
+          onChange={onChange}
+        ></Checkbox.Group>
+      );
+    },
   },
 ];
 
@@ -36,6 +57,9 @@ export default function () {
   const onFinish = async (val: any) => {
     // paint
     setParams(val);
+    // 获取表格数据
+    const res = await getTableData();
+    setTableData(res);
   };
 
   const setLoading = (val: boolean) => {
@@ -59,6 +83,7 @@ export default function () {
               dataSource={tableData}
               columns={columns}
               loading={state.loading}
+              rowKey="version"
             />
           </div>
         </div>
