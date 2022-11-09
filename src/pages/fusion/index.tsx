@@ -5,16 +5,36 @@ import style from './index.module.less';
 import LineCharts from '@/components/LineCharts';
 import { useEffect, useReducer, useState } from 'react';
 import { ChartContext, reducer, store } from '@/store';
+import { Table } from 'antd';
+import { getTableData } from '@/api';
 
-// import { getCalculate, getCases, getMetrics, getVersions } from '@/api';
+const columns: any[] = [
+  {
+    title: 'ID',
+    key: 'ID',
+    render: (_: any, __: any, index: number) => `${index + 1}`,
+  },
+  {
+    title: 'version',
+    dataIndex: 'version',
+    key: 'version',
+  },
+  {
+    title: 'reason',
+    dataIndex: 'reason',
+    key: 'reason',
+  },
+];
 
 export default function () {
   const [params, setParams] = useState(null);
 
   const [state, dispatch] = useReducer(reducer, store);
 
-  const onFinish = (val: any) => {
-    // paint 
+  const [tableData, setTableData] = useState([]);
+
+  const onFinish = async (val: any) => {
+    // paint
     setParams(val);
   };
 
@@ -34,6 +54,13 @@ export default function () {
         </div>
         <div className={style.right}>
           <LineCharts params={params} />
+          <div style={{ marginTop: '20px' }}>
+            <Table
+              dataSource={tableData}
+              columns={columns}
+              loading={state.loading}
+            />
+          </div>
         </div>
       </div>
     </ChartContext.Provider>
