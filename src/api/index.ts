@@ -19,3 +19,7 @@ export function submit(params: any) {
 export function getTableData(params?: any) {
   return request('GET', '/table', params);
 }
+
+export function setTableItemStatus(params?: any) {
+  return request('POST', '/setStatus', params);
+}

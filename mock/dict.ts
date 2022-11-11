@@ -49,4 +49,8 @@ export default {
       reason: 'reason3',
     },
   ],
+
+  'POST /setStatus': {
+    code: 1,
+  },
 };
