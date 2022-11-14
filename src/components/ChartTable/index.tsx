@@ -15,7 +15,7 @@ function TableCheckBox(props: any) {
   const [tempSelected, setTempSelected] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-
+ 
   useEffect(() => {
     setSelected(props.value);
   }, []);
@@ -27,6 +27,7 @@ function TableCheckBox(props: any) {
     // 这个接口如果要区分在哪个页面的话，可以和渲染表格一样传多个 type 到后端去判断
     // 页面都是一样的，我帮你复制好了，你改了这个页面另一个页面也要改一下e
     const res = await setTableItemStatus({
+      version: props.information.version,
       status: tempSelected,
       type: props.type,
     });
@@ -45,6 +46,7 @@ function TableCheckBox(props: any) {
   const onRadioClick = (value: boolean | null) => {
     value = value === selected ? null : value;
     setTempSelected(value);
+    console.log("aaaa")
     setOpen(true);
   };
   return (
@@ -63,8 +65,8 @@ function TableCheckBox(props: any) {
 
       <Modal
         // title 写弹框的标题，不要就删掉
-        title="Modal"
-        open={open}
+        // title="Modal"
+        visible={open}
         onOk={onOk}
         onCancel={() => setOpen(false)}
         okText="确认"
@@ -72,7 +74,7 @@ function TableCheckBox(props: any) {
         confirmLoading={loading}
       >
         {/* 这里写有要提示的文字 */}
-        <p>Bla bla ...</p>
+        <p>是否确认修改</p>
       </Modal>
     </>
   );
@@ -87,30 +89,32 @@ const columns = (type: string): any[] => {
     },
     {
       title: 'version',
-      dataIndex: 'version',
+      dataIndex: 'version'
     },
     {
       title: 'reason',
-      dataIndex: 'reason',
+      dataIndex: 'reason'
     },
     {
       title: 'predictable',
       dataIndex: 'predictable',
       render: (text: boolean | null, record: any, index: number) => (
-        <TableCheckBox value={text} type={type} />
+        <TableCheckBox value={text} type={type} information={record}/>
       ),
     },
   ];
 };
 
 export default function (props: any) {
-  const context = useContext(ChartContext);
+  const [loading, setLoading] = useState(false)
   const [tableData, setTableData] = useState([]);
 
   const _getTableData = async () => {
+    setLoading(true)
     // 获取表格数据
     const res = await getTableData({ type: props.type });
     setTableData(res);
+    setLoading(false)
   };
 
   useEffect(() => {
@@ -121,7 +125,7 @@ export default function (props: any) {
     <Table
       dataSource={tableData}
       columns={columns(props.type)}
-      loading={context.loading}
+      loading={loading}
       rowKey="version"
       style={{ width: '100%' }}
     />

@@ -61,7 +61,7 @@ export default function (props: any) {
     // 添加横坐标
     copy.xAxis.data = props.params?.versions || [];
     if (copy.xAxis.data?.length >= MAX_XAXIS_COUNT) {
-      echartWidth = MAX_XAXIS_COUNT * XAXIS_WIDTH + 'px';
+      echartWidth = copy.xAxis.data?.length * XAXIS_WIDTH + 'px';
     } else {
       echartWidth = '100%';
     }

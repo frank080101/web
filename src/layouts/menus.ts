@@ -12,6 +12,10 @@ const menus: RouteMenu[] = [
   {
     title: 'segmentation',
     path: '/segmentation',
+  },
+  {
+    title: 'test',
+    path: '/test',
   }
 ];
 

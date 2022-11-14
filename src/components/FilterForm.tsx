@@ -22,7 +22,7 @@ export default function (props: any) {
   const getVersionsList = async () => {
     const res = (await getVersions({type: props.type})) || [];
     setVersions(res);
-    form.setFieldValue('versions', res)
+    form.setFieldValue('versions', res.slice(-10))
   };
   // const getCalculateList = async () => {
   //   const res = await getCalculate() || [];
@@ -30,13 +30,25 @@ export default function (props: any) {
   // };
   const getCasesList = async () => {
     const res = await getCases({type: props.type}) || [];
+    let tmp:any = res
     setCases(res);
-    form.setFieldValue('cases', res)
+    if(props.type==="segmentation"){
+      tmp = res.filter((item: any, index: number)=>{
+        return item.indexOf("total")!=-1
+      })
+    }
+    form.setFieldValue('cases', tmp)
   };
   const getMetricsList = async () => {
     const res = await getMetrics({type: props.type}) || [];
+    let tmp:any = res
     setMetrics(res);
-    form.setFieldValue('metrics', res)
+    if(props.type==="fusion"){
+      tmp = res.filter((item: any, index: number)=>{
+        return index!=1&&index!=2&&index!=3
+      })
+    }
+    form.setFieldValue('metrics', tmp)
   };
 
 
@@ -66,7 +78,7 @@ export default function (props: any) {
 
   return (
     <>
-      <h1>You Title</h1>
+      <h1>Perception</h1>
       <Form {...formLayout} form={form} onFinish={onSubmit}>
         <Form.Item name="versions" label="versions">
           <Select mode="multiple" allowClear placeholder="Please select" showSearch>
