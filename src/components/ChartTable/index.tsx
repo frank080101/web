@@ -2,7 +2,7 @@ import { ChartContext } from '@/store';
 import { useContext, useEffect, useState } from 'react';
 import { Table, Radio, Modal } from 'antd';
 
-import { setTableItemStatus } from '@/api';
+import { setTableItemStatus, getTableData } from '@/api';
 
 const optionsWithDisabled = [
   { label: '是', value: true },
@@ -21,6 +21,7 @@ function TableCheckBox(props: any) {
   }, []);
 
   const onOk = async () => {
+    console.log(props.type);
     setLoading(true);
     // 调更改状态的接口，tempSelected 就是要传的值
     // 这个接口如果要区分在哪个页面的话，可以和渲染表格一样传多个 type 到后端去判断
@@ -104,13 +105,25 @@ const columns = (type: string): any[] => {
 
 export default function (props: any) {
   const context = useContext(ChartContext);
+  const [tableData, setTableData] = useState([]);
+
+  const _getTableData = async () => {
+    // 获取表格数据
+    const res = await getTableData({ type: props.type });
+    setTableData(res);
+  };
+
+  useEffect(() => {
+    _getTableData();
+  }, []);
 
   return (
     <Table
-      dataSource={props.tableData}
+      dataSource={tableData}
       columns={columns(props.type)}
       loading={context.loading}
       rowKey="version"
+      style={{ width: '100%' }}
     />
   );
 }
