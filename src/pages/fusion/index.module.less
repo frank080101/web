@@ -2,8 +2,6 @@
   padding: 10px;
   min-height: 100%;
   display: flex;
-  background-color: rgb(224, 240, 255);
-
   .left {
     width: 34%;
     background-color: #eee;
@@ -14,5 +12,8 @@
     flex: 1;
     height: 500px;
     padding: 0 10px;
+  }
+  :global(.ant-table-wrapper) {
+    max-width: 1000px;
   }
 }

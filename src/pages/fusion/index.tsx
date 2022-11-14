@@ -3,19 +3,24 @@ import FilterForm from '@/components/FilterForm';
 import style from './index.module.less';
 
 import LineCharts from '@/components/LineCharts';
-import { useEffect, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
 import { ChartContext, reducer, store } from '@/store';
-
-// import { getCalculate, getCases, getMetrics, getVersions } from '@/api';
+import { getTableData } from '@/api';
+import ChartTable from '@/components/ChartTable';
 
 export default function () {
   const [params, setParams] = useState(null);
 
   const [state, dispatch] = useReducer(reducer, store);
 
-  const onFinish = (val: any) => {
-    // paint 
+  const [tableData, setTableData] = useState([]);
+
+  const onFinish = async (val: any) => {
+    // paint
     setParams(val);
+    // 获取表格数据
+    const res = await getTableData();
+    setTableData(res);
   };
 
   const setLoading = (val: boolean) => {
@@ -34,6 +39,9 @@ export default function () {
         </div>
         <div className={style.right}>
           <LineCharts params={params} />
+          <div style={{ marginTop: '20px' }}>
+            <ChartTable type="fusion" tableData={tableData} />
+          </div>
         </div>
       </div>
     </ChartContext.Provider>

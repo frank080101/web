@@ -1,7 +1,7 @@
 import { ChartContext } from '@/store';
 import ReactEcharts from 'echarts-for-react';
 import { useContext, useMemo } from 'react';
-import {Spin} from 'antd'
+import { Spin } from 'antd';
 import style from './index.module.less';
 
 const getOption: any = () => ({
@@ -29,6 +29,10 @@ const getOption: any = () => ({
   },
   xAxis: {
     type: 'category',
+    axisLabel: {
+      interval: 0,
+    },
+    // max: 10,
     boundaryGap: false,
     data: [],
     //data就是分类的一些名字，比如我图例中的 一月、二月、三月
@@ -38,6 +42,12 @@ const getOption: any = () => ({
   },
   series: [],
 });
+
+let echartWidth = '100%';
+
+const MAX_XAXIS_COUNT = 10;
+
+const XAXIS_WIDTH = 120;
 
 export default function (props: any) {
   const context = useContext(ChartContext);
@@ -50,6 +60,11 @@ export default function (props: any) {
     );
     // 添加横坐标
     copy.xAxis.data = props.params?.versions || [];
+    if (copy.xAxis.data?.length >= MAX_XAXIS_COUNT) {
+      echartWidth = MAX_XAXIS_COUNT * XAXIS_WIDTH + 'px';
+    } else {
+      echartWidth = '100%';
+    }
     // 添加纵坐标的值
     copy.legend.data?.forEach((item: any) => {
       copy.series.push({
@@ -62,10 +77,12 @@ export default function (props: any) {
   }, [props.params]);
 
   return (
-    <div className={style.ecahrts} style={{ width: '100%' }}>
+    <div className={style.ecahrts} style={{ width: echartWidth }}>
       {context.loading ? (
-        <Spin spinning={true} style={{width: '100%', lineHeight: '500px'}}></Spin>
-        
+        <Spin
+          spinning={true}
+          style={{ width: '100%', lineHeight: '500px' }}
+        ></Spin>
       ) : props.params ? (
         <ReactEcharts
           option={chartOption}
