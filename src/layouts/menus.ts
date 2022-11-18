@@ -14,8 +14,8 @@ const menus: RouteMenu[] = [
     path: '/segmentation',
   },
   {
-    title: 'test',
-    path: '/test',
+    title: 'uoseg',
+    path: '/uoseg',
   }
 ];
 

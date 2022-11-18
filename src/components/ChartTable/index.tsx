@@ -89,11 +89,33 @@ const columns = (type: string): any[] => {
     },
     {
       title: 'version',
-      dataIndex: 'version'
+      dataIndex: 'version',
+      onCell: ()=>{
+        return {
+          style:{
+            minWidth: 100,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      }
     },
     {
       title: 'reason',
-      dataIndex: 'reason'
+      dataIndex: 'reason',
+      onCell: ()=>{
+        return {
+          style:{
+            minWidth: 100,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      }
     },
     {
       title: 'predictable',
