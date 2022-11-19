@@ -15,7 +15,7 @@ function TableCheckBox(props: any) {
   const [tempSelected, setTempSelected] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
- 
+
   useEffect(() => {
     setSelected(props.value);
   }, []);
@@ -46,7 +46,7 @@ function TableCheckBox(props: any) {
   const onRadioClick = (value: boolean | null) => {
     value = value === selected ? null : value;
     setTempSelected(value);
-    console.log("aaaa")
+    console.log('aaaa');
     setOpen(true);
   };
   return (
@@ -90,53 +90,53 @@ const columns = (type: string): any[] => {
     {
       title: 'version',
       dataIndex: 'version',
-      onCell: ()=>{
+      onCell: () => {
         return {
-          style:{
-            minWidth: 100,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      }
+          style: {
+            // 这里调节每一列的宽度
+            maxWidth: 180,
+            /** 一行显示且有省略号就放开下面的注释 */
+            // overflow: 'hidden',
+            // whiteSpace: 'nowrap',
+            // textOverflow: 'ellipsis'
+          },
+        };
+      },
     },
     {
       title: 'reason',
       dataIndex: 'reason',
-      onCell: ()=>{
+      onCell: () => {
         return {
-          style:{
-            minWidth: 100,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      }
+          style: {
+            maxWidth: 180,
+            // overflow: 'hidden',
+            // whiteSpace: 'nowrap',
+            // textOverflow: 'ellipsis'
+          },
+        };
+      },
     },
     {
       title: 'predictable',
       dataIndex: 'predictable',
       render: (text: boolean | null, record: any, index: number) => (
-        <TableCheckBox value={text} type={type} information={record}/>
+        <TableCheckBox value={text} type={type} information={record} />
       ),
     },
   ];
 };
 
 export default function (props: any) {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
 
   const _getTableData = async () => {
-    setLoading(true)
+    setLoading(true);
     // 获取表格数据
     const res = await getTableData({ type: props.type });
     setTableData(res);
-    setLoading(false)
+    setLoading(false);
   };
 
   useEffect(() => {

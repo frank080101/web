@@ -41,7 +41,8 @@ export default {
     {
       predictable: true,
       version: 'version2',
-      reason: 'reason3',
+      reason:
+        'reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3reason3',
     },
     {
       predictable: false,
