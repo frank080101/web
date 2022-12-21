@@ -16,6 +16,14 @@ const menus: RouteMenu[] = [
   {
     title: 'uoseg',
     path: '/uoseg',
+  },
+  {
+    title: 'multitask',
+    path: '/multitask',
+  },
+  {
+    title: 'lidar_semantic',
+    path: '/lidar_semantic',
   }
 ];
 

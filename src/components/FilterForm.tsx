@@ -30,12 +30,16 @@ export default function (props: any) {
   // };
   const getCasesList = async () => {
     const res = await getCases({type: props.type}) || [];
-    let tmp:any = res
+    let tmp:any = res;
     setCases(res);
     if(props.type==="segmentation"){
       tmp = res.filter((item: any, index: number)=>{
         return item.indexOf("total")!=-1
       })
+    }
+    else if(props.type==="fusion"){
+      // tmp = JSON.parse(JSON.stringify(["total"]));
+      tmp = ["total"]
     }
     form.setFieldValue('cases', tmp)
   };
