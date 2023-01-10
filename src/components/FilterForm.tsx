@@ -39,7 +39,7 @@ export default function (props: any) {
     }
     else if(props.type==="fusion"){
       // tmp = JSON.parse(JSON.stringify(["total"]));
-      tmp = ["total"]
+      tmp = ["Average"]
     }
     form.setFieldValue('cases', tmp)
   };
